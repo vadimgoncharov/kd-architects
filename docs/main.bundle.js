@@ -480,6 +480,7 @@ function recalcSizes() {
   blocks.forEach(block => root.appendChild(block));
 }
 
+setTimeout(() => {}, 1000);
 recalcSizes();
 
 if (window.innerWidth > 400) {
@@ -520,33 +521,37 @@ function createGroup() {
 
 let i = window.pageYOffset;
 let prevScrollY = window.pageYOffset;
-window.addEventListener('scroll', () => {
-  const pageYOffset = window.pageYOffset;
-  let inc = 1;
+setTimeout(() => {
+  window.addEventListener('scroll', () => {
+    const pageYOffset = window.pageYOffset;
 
-  if (prevScrollY > pageYOffset) {
-    inc = -1;
-  }
+    const scrollPerc = _get_scroll_percentage();
 
-  prevScrollY = pageYOffset;
+    let inc = 1;
 
-  for (let j = 0; j < blockXCount; j++) {
-    const block = blocks[i % blockTotalCount];
-    i += inc;
-    block.style.objectPosition = `${randObjPos()}% ${randObjPos()}%`;
-    block.src = getRandImgByScrollPos(pageYOffset);
-  }
-}, {
-  passive: true
-});
+    if (prevScrollY > pageYOffset) {
+      inc = -1;
+    }
 
-function getRandImgByScrollPos(scrollPos) {
+    prevScrollY = pageYOffset;
+
+    for (let j = 0; j < blockXCount; j++) {
+      const block = blocks[i % blockTotalCount];
+      i += inc;
+      block.style.objectPosition = `${randObjPos()}% ${randObjPos()}%`;
+      block.src = getRandImgByScrollPos(scrollPerc);
+    }
+  }, {
+    passive: true
+  });
+}, 1000);
+
+function getRandImgByScrollPos(scrollPerc) {
   // pageYOffset -- ?
   // scrollHeight -- 100
   //
   // ? = (pageYOffset / scrollHeight) * 100
-  const currPerc = _get_scroll_percentage();
-
+  const currPerc = scrollPerc;
   let imgs = zahaImgs;
 
   if (currPerc < 10) {
